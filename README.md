@@ -10,7 +10,7 @@ environment:
 virtualenv env
 pip install -r requirements.txt
 source env/bin/activate
-python setup.py
+python setup.py install
 ```
 
 Alternatively, Docker builds are supported.
