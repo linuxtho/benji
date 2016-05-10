@@ -16,44 +16,68 @@ class BenjiBot(irc.client.SimpleIRCClient):
     All bot behavior is modeled via modules. See benji.modules for examples.
     """
     def __init__(self, **config):
-        self.nick = config['nick']
-
-        self._load_modules(**config)
         super(BenjiBot, self).__init__()
 
-    def _load_modules(self, **config):
+        self.meta_config = config['meta']
+        self.connection_config = config['connection']
+        self.channels = config['channels']
+
+        self._load_modules()
+
+
+    def _load_modules(self):
         pass
 
-    def _on_disconnect(self, connection, event):
+    def _join_channels(self):
+        for channel in self.channels:
+            self.connection.join(channel)
+
+    def on_disconnect(self, connection, event):
         # TODO
+        print('disconnect event')
         pass
 
-    def _on_join(self, connection, event):
+    def on_welcome(self, connection, event):
+        self._join_channels()
+
+    def on_nicknameinuse(self, connection, event):
+        new_nick = self.meta_config['nick'] + '_'
+        self.meta_config['nick'] = new_nick
+        connection.nick(new_nick)
+
+    def on_join(self, connection, event):
         # TODO
+        print('join event')
         pass
 
-    def _on_kick(self, connection, event):
+    def on_kick(self, connection, event):
         # TODO
+        print('kick event')
         pass
 
-    def _on_mode(self, connection, event):
+    def on_mode(self, connection, event):
         # TODO
+        print('mode event')
         pass
 
-    def _on_namreply(self, connection, event):
+    def on_namreply(self, connection, event):
         # TODO
+        print('namreply event')
         pass
 
-    def _on_nick(self, connection, event):
+    def on_nick(self, connection, event):
         # TODO
+        print('nick event')
         pass
 
-    def _on_part(self, connection, event):
+    def on_part(self, connection, event):
         # TODO
+        print('part event')
         pass
 
-    def _on_quit(self, connection, event):
+    def on_quit(self, connection, event):
         # TODO
+        print('quit event')
         pass
 
     @staticmethod
@@ -69,20 +93,49 @@ class BenjiBot(irc.client.SimpleIRCClient):
 
         Replies to VERSION and PING requests. DCC requests go to on_dccchat.
         """
+        print("ctcp event")
+        source_nick = event.source.nick
+        if event.arguments[0] == 'VERSION':
+            connection.ctcp_reply(source_nick, "VERSION " + self.get_version())
+        elif event.arguments[0] == "PING":
+            if len(event.arguments) > 1:
+                connection.ctcp_reply(source_nick, "PING " + event.arguments[1])
+        elif event.arguments[0] == "DCC" and event.arguments[1].split(" ", 1)[0] == "CHAT":
+            self.on_dccchat(connection, event)
         # TODO
         pass
 
     def on_dccchat(self, connection, event):
         """Default handler for DCC events."""
+        print("dccchat event")
+        # TODO
+        pass
+
+    def on_privmsg(self, connection, event):
+        print("privmsg event")
+        # TODO
+        pass
+
+    def on_pubmsg(self, connection, event):
+        print("pubmsg event")
         # TODO
         pass
 
     def connect(self):
-        # TODO
-        pass
+        print("Connecting...")
+        super(BenjiBot, self).connect(
+            server=self.connection_config['host'],
+            port=self.connection_config['port'],
+            nickname=self.meta_config['nick'],
+            password=self.meta_config['password'],
+            username=self.meta_config['username'],
+            ircname=self.meta_config['realname'])
+        self._join_channels()
+        print("Done.")
 
     def disconnect(self):
         """Disconnect from the server."""
+        print("Disconnecting")
         # TODO
         pass
 
