@@ -1,0 +1,15 @@
+meta:
+    nick: benji
+    username: benji
+    realname: Benji Bot
+    password: ''
+
+connection:
+    host: irc.digitaladdiction.info
+    port: 6667
+    # SSL not yet supported
+    ssl: False
+    ssl_verify: False
+
+channels:
+    - "#BotTest"
