@@ -35,6 +35,11 @@ setup(
     description='IRC Robot',
     license='Apache 2.0',
     url='https://github.com/linuxtho/benji',
-    py_modules=['benji'],
+    entry_points={
+        'console_scripts': [
+            'benji = benji.main:main',
+        ]
+    },
+    packages=['benji'],
     install_requirements=requirements,
 )
