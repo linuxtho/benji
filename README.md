@@ -13,7 +13,7 @@ source env/bin/activate
 python setup.py
 ```
 
-Docker builds coming soon :)
+Alternatively, Docker builds are supported.
 
 Adding Modules
 =============
